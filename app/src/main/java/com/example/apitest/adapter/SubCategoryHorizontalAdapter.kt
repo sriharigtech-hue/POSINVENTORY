@@ -1,6 +1,5 @@
 package com.example.apitest.adapter
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.apitest.R
 import com.example.apitest.dataModel.SubCategoryDetails
 import com.google.android.material.card.MaterialCardView
-
 
 class SubCategoryHorizontalAdapter(
     private val subCategories: MutableList<SubCategoryDetails>,
@@ -36,11 +34,7 @@ class SubCategoryHorizontalAdapter(
         val subCat = subCategories[position]
         holder.txtSubCategory.text = subCat.subcategoryName ?: "N/A"
 
-        // Always get the current adapter position
-        val adapterPos = holder.adapterPosition
-        if (adapterPos == RecyclerView.NO_POSITION) return
-
-        if (adapterPos == selectedPosition) {
+        if (position == selectedPosition) {
             holder.cardSubCategory.setCardBackgroundColor(
                 ContextCompat.getColor(holder.itemView.context, R.color.blue243757)
             )
@@ -57,16 +51,12 @@ class SubCategoryHorizontalAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val clickedPosition = holder.adapterPosition
-            if (clickedPosition != RecyclerView.NO_POSITION) {
-                val previousPosition = selectedPosition
-                selectedPosition = clickedPosition
-                notifyItemChanged(previousPosition)
-                notifyItemChanged(selectedPosition)
-                onClick(subCat)
-            }
+            val previousPosition = selectedPosition
+            selectedPosition = position
+            notifyItemChanged(previousPosition)
+            notifyItemChanged(selectedPosition)
+            onClick(subCat)
         }
-
     }
 
     fun setData(newList: List<SubCategoryDetails>) {

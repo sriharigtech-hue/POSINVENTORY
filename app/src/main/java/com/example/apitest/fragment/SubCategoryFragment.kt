@@ -165,34 +165,30 @@ class SubCategoryFragment : Fragment() {
             })
     }
     private fun deleteSubCategory(subCategory: SubCategoryDetails) {
-
         val input = StatusUpdateInput(
-            category_id = subCategory.categoryId ?: 0,
+            categoryId = subCategory.categoryId?.toString() ?: "0",
             sub_category_id = subCategory.subcategoryId.toString(),
             status = 0,
-            category_status = 0 // important
+            categoryStatus = "0"
         )
 
-        ApiClient.instance.deleteSubCategory(jwtToken, input)?.enqueue(object : Callback<StatusResponse> {
-            override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
-                if (response.isSuccessful && response.body()?.status == true) {
-                    Toast.makeText(requireContext(), "Deleted successfully", Toast.LENGTH_SHORT).show()
-                    val index = subCategoryList.indexOfFirst { it.subcategoryId == subCategory.subcategoryId }
-                    if (index != -1) {
-                        subCategoryList.removeAt(index)
-                        adapter.notifyItemRemoved(index)
+        ApiClient.instance.deleteSubCategory(jwtToken, input)
+            ?.enqueue(object : Callback<StatusResponse> {
+                override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
+                    if (response.isSuccessful && response.body()?.status == true) {
+                        Toast.makeText(requireContext(), "Deleted successfully", Toast.LENGTH_SHORT).show()
+                        adapter.removeItem(subCategory.subcategoryId) // ✅ this updates UI properly
+                    } else {
+                        Toast.makeText(requireContext(), response.body()?.message ?: "Delete failed", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Log.d("DeleteAPI", "Failed response: ${response.errorBody()?.string()}")
-                    Toast.makeText(requireContext(), response.body()?.message ?: "Delete failed", Toast.LENGTH_SHORT).show()
                 }
-            }
 
-            override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
-                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
+
     private fun updateSubCategoryStatus(subCategory: SubCategoryDetails, isChecked: Boolean) {
         val newStatus = if (isChecked) 1 else 0
 

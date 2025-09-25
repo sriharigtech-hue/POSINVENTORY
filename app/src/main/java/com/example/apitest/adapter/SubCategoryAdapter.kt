@@ -92,5 +92,17 @@ class SubCategoryAdapter(
         }
         notifyDataSetChanged()
     }
+    // 🗑 NEW: Delete item properly
+    fun removeItem(subCategoryId: Int?) {
+        if (subCategoryId == null) return
+        val index = filteredList.indexOfFirst { it.subcategoryId == subCategoryId }
+        if (index != -1) {
+            val item = filteredList[index]
+            filteredList.removeAt(index)
+            subCategoryList.removeAll { it.subcategoryId == item.subcategoryId }
+            notifyItemRemoved(index)
+        }
+    }
+
 }
 

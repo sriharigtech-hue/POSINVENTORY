@@ -39,5 +39,9 @@ data class StockProductData(
     @Json(name = "low_stock_alert")
     var low_stock_alert: Int? = null,
     @Json(name = "stock_update_status")
-    var stock_update_status: Int? = null
+    var stock_update_status: Int? = null,
+    @Json(name = "category_id")
+    var categoryId: String? = null,
+    @Json(name = "category_status")
+    var categoryStatus: String? = null
 ): Parcelable

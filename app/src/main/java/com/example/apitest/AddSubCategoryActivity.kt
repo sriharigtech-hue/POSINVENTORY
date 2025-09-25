@@ -2,6 +2,7 @@ package com.example.apitest
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -103,29 +104,42 @@ class AddSubCategoryActivity : AppCompatActivity() {
     }
 
     private fun addSubCategory(subCategoryName: String, categoryId: Int) {
+        // Log the values before sending
+        Log.d("AddSubCategory", "Adding SubCategory: $subCategoryName under CategoryId: $categoryId")
 
         val input = InputField(
             subCategoryName = subCategoryName,
-            categoryId = categoryId,
+            categoryId = categoryId,  // Ensure this is passed correctly
             status = "1",
-
         )
+
+        // Log the request body
+        Log.d("AddSubCategory", "Request Body: $input")
 
         ApiClient.instance.addSubCategory(jwtToken, input)
             ?.enqueue(object : Callback<StatusResponse?> {
                 override fun onResponse(call: Call<StatusResponse?>, response: Response<StatusResponse?>) {
-                    if (response.isSuccessful && response.body()?.status == true) {
-                        Toast.makeText(this@AddSubCategoryActivity, "Sub Category added successfully", Toast.LENGTH_SHORT).show()
-                        setResult(Activity.RESULT_OK )
-                                finish() // Close activity
+                    if (response.isSuccessful) {
+                        Log.d("AddSubCategory", "Response Code: ${response.code()}")
+                        Log.d("AddSubCategory", "Response Body: ${response.body()}")
+                        if (response.body()?.status == true) {
+                            Toast.makeText(this@AddSubCategoryActivity, "Sub Category added successfully", Toast.LENGTH_SHORT).show()
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        } else {
+                            Toast.makeText(this@AddSubCategoryActivity, response.body()?.message ?: "Failed", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        Toast.makeText(this@AddSubCategoryActivity, response.body()?.message ?: "Failed", Toast.LENGTH_SHORT).show()
+                        Log.d("AddSubCategory", "Error Response: ${response.errorBody()?.string()}")
+                        Toast.makeText(this@AddSubCategoryActivity, "Failed to add Sub Category", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<StatusResponse?>, t: Throwable) {
+                    Log.e("AddSubCategory", "API Failure", t)
                     Toast.makeText(this@AddSubCategoryActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
     }
+
 }

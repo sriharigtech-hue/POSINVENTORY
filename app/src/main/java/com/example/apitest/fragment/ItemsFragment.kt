@@ -26,7 +26,7 @@ import retrofit2.Response
 
 class ItemsFragment : Fragment() {
 
-    private val jwtToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1IiwianRpIjoiNmZiMTgzMGFlYzFkNzUzOTdiNDBjMmE3NWJhOWRmZWU4MTU3YWMxZmZlMTg2NGYxZWMwOTYyYzA1NjE1YThjNTlkZjg3MjVjNDlmNmJmZTYiLCJpYXQiOjE3NTg2MTM2MzguMzQyMTUzLCJuYmYiOjE3NTg2MTM2MzguMzQyMTU3LCJleHAiOjE3OTAxNDk2MzguMzM2ODI2LCJzdWIiOiI2Iiwic2NvcGVzIjpbXX0.QiPgcG55zwKdr_U471IaYnBQkUk437w5vRrmjxWos1zRADMFKLuovtJ8IqoTzbkQ1GMWE0fr6c22cdBq9Eq4PlY71A8ocqua6rhGKTS5h7ziYjA8y_KNRSmvWeSfrYF59FCv_sl_Yi8mci_Gl6lzLV5yzf-gQOcmxQ0m4NifHTxCZZEOXloSS0V2KtiECV1MwATuDGLGv7QYAwte7XEIZiCFjTJUjGGKdcXHGdCPXnsnlSSzyYUCuljabM4Of3dnP6QV6YVEuRkAiSn7HvyqgNpi34ux4lsVXFMWy1qnbI-VI_fo2Vcf5uZa8B4KBYVNT7YkV2_KcxEsdZ-ZhRzGbm6erYvUuwWUTLj8DHRUHfH-s1sOO4j3u8SQeVV47OfXB6Wo-CghPzuMQBtTvoQe2_zgAV9QrCS-xsk-uJxHLxp_dao9igrzB6fskUGshJ70IKLatiF3IDXuyVLZNqOJUblUYpoyvKuj4dBa-BZUnS35m9jm5Rz5XCkeIMIm26VTvwiNcuTg0cAXhpe97yZ_Ir0FV7-8YNQCPTAtCrC4IA0r6cuLTkWjZWa-gokQKbMWble8R9VoP-OIm0zFbISJUBtI-B0cif3oxTwr7m12jubPutnFl_HZyREBOticvsTf6q48cKUxNSYeyOW3aMdbZ584yRv95UYKUou0k0LbezM"
+    private val jwtToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1IiwianRpIjoiOTMyZGFhM2IyNGZmM2Q0ZTY5NmQwYTdlODdhNmY1Y2ViOTA1Y2VhMzc0NWU5NmFlMTBhZWEwZjY2MDkxZDZiMWI1MjIwYjIwYmU4N2EyNDEiLCJpYXQiOjE3NTg3OTI2NDEuMjExMDEsIm5iZiI6MTc1ODc5MjY0MS4yMTEwMTMsImV4cCI6MTc5MDMyODY0MS4yMDQ5NjYsInN1YiI6IjYiLCJzY29wZXMiOltdfQ.lcZz0mc3u-to55t0p23p5g_Z1NQHM23K6xT8vaRAr7X9qHsMbyN9OEq-KuHhZGaqikcY-7ak26uM3_mtoLpLfq6jivhUPFC06JL7ID3HRHOUsWY05CqjIwPpOfjop127eWyz1CYmBmZx3mKsSuE2rvNK91OsROryf1Dz-Px0SnVJ1uDJGK9y1zsJ_Mi8wY7WIH_E3cBusI7uSgNHTQq7dh6GurCYymPxnvvR8cdMQ4Om9SnmfqX9f3GCUncHXBVfxYCuH6ElLsjq74Z9ZXRGBLdwdM4BJWiyv4jzKfU80LmErPo7XT90DPzqa40T0pRblACQsaSGLn64TBoKvxlsO4HjJV8nBg3az5PrCkDsj8QTwgPLzJtP7WcT3pvcCI6O3O8OKlL2lR2-csFHNzCHetHaT1fmOLnVWuc5YIjqhYFEOjp8IKVhzxmcocxsd3R8bcvrjR8NcutOX5H7zmfD-GX17f64RT2c0zqSRdVpRxFZYlNycxd3rI591w9ImgZSkeGQN4Eg8us8oqmlRqfF5mO7QZXi_OsjJgnMdovqP1NB1IxHuTHQIyfESkQ3DoA_KYBF4_8DXhyjvE2D5_SQfZitUpjSwfWqZ_ghgVoOdLJokz4TBJQ9j_ec4jK3uf3nCwS_6Evx9zwbZxmin2CpnIrg4lFRmMpO6YgLfYKPqoI"
     private var _binding: FragmentItemsBinding? = null
     private val binding get() = _binding!!
 
@@ -55,8 +55,44 @@ class ItemsFragment : Fragment() {
                 .getBoolean("stock_enabled", false)
             val intent = Intent(requireContext(), AddProductActivity::class.java)
             intent.putExtra("stock_enabled", stockEnabled)
+            intent.putExtra("type_method", 1) // ✅ sending extra value
             addProductLauncher.launch(intent)
         }
+
+        itemsAdapter = ItemsAdapter(itemsList)
+        binding.centerRecyclerView.adapter = itemsAdapter
+
+        // Handle Edit click
+        // Handle Edit click
+        itemsAdapter.setOnEditClickListener { product ->
+            Log.d("ItemsFragment", "productId=${product.productId}, name=${product.productName}")
+
+            val intent = Intent(requireContext(), AddProductActivity::class.java).apply {
+                putExtra("type_method", 2)
+                putExtra("product_id", product.productId)
+            }
+            addProductLauncher.launch(intent) // Use launcher instead of startActivity
+        }
+
+
+
+
+
+// Handle Delete click
+        itemsAdapter.setOnDeleteClickListener { product ->
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Delete Product")
+                .setMessage("Are you sure you want to delete ${product.productName}?")
+                .setPositiveButton("Yes") { _, _ ->
+                    product.productId?.let { productId ->
+                        deleteProduct(productId.toString(), product)
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
+
+
 
         // Sidebar RecyclerView
         binding.serviceList.layoutManager = LinearLayoutManager(requireContext())
@@ -84,8 +120,7 @@ class ItemsFragment : Fragment() {
 
         // Center RecyclerView
         binding.centerRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        itemsAdapter = ItemsAdapter(itemsList)
-        binding.centerRecyclerView.adapter = itemsAdapter
+
 
         // Subcategory horizontal RecyclerView
         binding.subCategoryList.layoutManager =
@@ -256,6 +291,38 @@ class ItemsFragment : Fragment() {
                 }
             })
     }
+    private fun deleteProduct(productId: String, product: StockProductData) {
+        val input = StatusUpdateInput(
+            categoryId = "0",        // use string, or actual category ID if available
+            categoryStatus = "0",    // status as string
+            product_id = productId,
+            status = 1
+        )
+
+        ApiClient.instance.deleteProduct(jwtToken, input)
+            .enqueue(object : Callback<StatusResponse> {
+                override fun onResponse(call: Call<StatusResponse>, response: Response<StatusResponse>) {
+                    if (response.isSuccessful && response.body()?.status == true) {
+                        Toast.makeText(context, response.body()?.message ?: "Deleted successfully", Toast.LENGTH_SHORT).show()
+
+                        // Remove from local list
+                        val index = itemsList.indexOf(product)
+                        if (index != -1) {
+                            itemsList.removeAt(index)
+                            itemsAdapter.notifyItemRemoved(index)
+                            itemsAdapter.notifyItemRangeChanged(index, itemsList.size)
+                        }
+                    } else {
+                        Toast.makeText(context, "Failed to delete product", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<StatusResponse>, t: Throwable) {
+                    Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

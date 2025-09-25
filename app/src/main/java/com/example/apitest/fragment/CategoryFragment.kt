@@ -104,7 +104,7 @@ class CategoryFragment : Fragment() {
             val intent = Intent(requireContext(), EditCategoryActivity::class.java)
             intent.putExtra("category_id", category.category_id.toString())
             intent.putExtra("category_name", category.category_name)
-          intent.putExtra("category_image", category.category_image ?: "")
+            intent.putExtra("category_image", category.category_image ?: "")
             editCategoryLauncher.launch(intent)
         }
 
@@ -128,7 +128,11 @@ class CategoryFragment : Fragment() {
             .show()
     }
     private fun deleteCategory(category: Category) {
-        val input = StatusUpdateInput(category_id = category.category_id, status = 0, category_status = 0)
+        val input = StatusUpdateInput(
+            categoryId = category.category_id.toString(), // convert to String if needed
+            categoryStatus = "0", // or whatever value
+            status = 0
+        )
 
         ApiClient.instance.deleteCategory(jwtToken, input)
             .enqueue(object : Callback<StatusResponse> {
@@ -150,7 +154,7 @@ class CategoryFragment : Fragment() {
 
 
     private fun fetchCategories() {
-       val input = CategoryInput(status = "1")
+        val input = CategoryInput(status = "1")
 
         ApiClient.instance.stockCategoryApi(jwtToken, input)
             .enqueue(object : Callback<CategoryListOutput> {

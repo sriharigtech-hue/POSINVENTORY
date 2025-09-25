@@ -108,7 +108,7 @@ interface ApiService {
         @Body statusUpdateInput: StatusUpdateInput?
     ): Call<StatusResponse>
 
-  //API for sub_category status update
+    //API for sub_category status update
     @Headers("Accept:application/json; charset=UTF-8")
     @POST("subcategory_status_update")
     fun subCategoryStatusUpdate(
@@ -136,13 +136,13 @@ interface ApiService {
 
 
 
-// API for fetch Items based on category and subcategory
-@Headers("Accept:application/json; charset=UTF-8")
-@POST("get_all_product")
-fun getAllProduct(
-    @Header("Authorization") jwtToken: String,
-    @Body input: Input?
-): Call<StockProductOutput>
+    // API for fetch Items based on category and subcategory
+    @Headers("Accept:application/json; charset=UTF-8")
+    @POST("get_all_product")
+    fun getAllProduct(
+        @Header("Authorization") jwtToken: String,
+        @Body input: Input?
+    ): Call<StockProductOutput>
 
 
     // API for adding product(Items)
@@ -153,6 +153,12 @@ fun getAllProduct(
         @Body dashboardInput: AddProductInput?
     ): Call<StatusResponse?>?
 
+    @Headers("Accept:application/json; charset=UTF-8")
+    @POST("edit_product")
+    fun editProduct(
+        @Header("Authorization") jwtToken: String,
+        @Body dashboardInput: AddProductInput?
+    ): Call<StatusResponse?>?
 
 
     @Headers("Accept:application/json; charset=UTF-8")
@@ -169,5 +175,19 @@ fun getAllProduct(
         @Header("Authorization") jwtToken: String,
         @Body dashboardInput: InputField?
     ): Call<AddProductOutput?>?
+
+    @Headers("Accept:application/json; charset=UTF-8")
+    @POST("delete_product")
+    fun deleteProduct(
+        @Header("Authorization") jwtToken: String,
+        @Body statusUpdateInput: StatusUpdateInput?
+    ): Call<StatusResponse>
+
+    @Headers("Accept:application/json; charset=UTF-8")
+    @POST("product_status_update")
+    fun productStatusUpdate(
+        @Header("Authorization") jwtToken: String,
+        @Body statusUpdateInput: StatusUpdateInput?
+    ): Call<StatusResponse>
 
 }

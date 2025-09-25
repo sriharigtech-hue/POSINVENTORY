@@ -68,6 +68,7 @@ class ProductVariationAdapter(
         val prefs = holder.itemView.context.getSharedPreferences("app_prefs", MODE_PRIVATE)
         val showMRP = prefs.getBoolean("show_mrp", true)
         val showWholesale = prefs.getBoolean("show_wholesale", true)
+        val showTax = prefs.getBoolean("show_tax", false)
 
         holder.productMRPPrice.visibility = if (showMRP && !item.mrp_price.isNullOrEmpty()) View.VISIBLE else View.GONE
         holder.view6.visibility = holder.productMRPPrice.visibility
